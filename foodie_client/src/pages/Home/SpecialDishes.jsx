@@ -6,7 +6,7 @@ import Cards from "../../components/Cards";
 import { FaAngleLeft } from "react-icons/fa";
 import { FaAngleRight } from "react-icons/fa";
 
-const simpleNextArrow = (props) => {
+const SimpleNextArrow = (props) => {
   const { className, style, onClick } = props;
   return (
     <div
@@ -19,7 +19,7 @@ const simpleNextArrow = (props) => {
   );
 };
 
-const simplePrevArrow = (props) => {
+const SimplePrevArrow = (props) => {
   const { className, style, onClick } = props;
   return (
     <div
@@ -79,8 +79,8 @@ const SpecialDishes = () => {
         },
       },
     ],
-    nextArrow: <simpleNextArrow />,
-    prevArrow: <simplePrevArrow />,
+    nextArrow: <SimpleNextArrow />,
+    prevArrow: <SimplePrevArrow />,
   };
   return (
     <div className="section-container py-20 bg-gradient-to-r from-[#FAFAFA] from-0% to-[#FCFCFC] to-100%">

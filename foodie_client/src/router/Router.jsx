@@ -2,6 +2,8 @@ import {createBrowserRouter} from "react-router-dom";
 import Main from "../Layout/Main";
 import Home from "../pages/Home/Home";
 import Menu from "../pages/Shop/Menu";
+import Signup from "../components/Signup";
+import UpdateProfile from "../pages/dashboard/UpdateProfile";
 
 const router = createBrowserRouter([
   {
@@ -15,9 +17,17 @@ const router = createBrowserRouter([
         {
           path: "/menu",
           element: <Menu />
+        },
+        {
+          path: "/update-profile",
+          element: <UpdateProfile />
         }
     ]
   },
+  {
+    path: "/signup",
+    element: <Signup />
+  }
 ]);
 
 
