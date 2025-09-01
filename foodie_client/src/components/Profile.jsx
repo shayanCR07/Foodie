@@ -1,7 +1,15 @@
-import React from "react"
-import { useNavigate } from "react-router-dom";
+import React, { useContext } from "react";
+import { AuthContext } from "../contexts/AuthProvider";
 
 const Profile = ({ user }) => {
+  const {logOut} = useContext(AuthContext)
+  const handleLogout = () => {
+    logOut().then(() => {
+      // Sign-out successful.
+    }).catch((error) => {
+      // An error happened.
+    });
+  }
   return (
     <div>
       <div className="drawer drawer-end z-50">
@@ -12,23 +20,14 @@ const Profile = ({ user }) => {
             htmlFor="my-drawer-4"
             className="drawer-button btn btn-ghost btn-circle avatar"
           >
-           <div className="w-10 rounded-full" >
-          { 
-            user.photoURL ? <img
+            <div className="w-10 rounded-full">
+              {
+                user.photoURL ? <img
                 alt="Tailwind CSS Navbar component"
                 src={user.photoURL}
-              />
-        : 
-        <img
-            alt="Tailwind CSS Navbar component"
-            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
-           }
-           document.getElementById("my_modal_5").close()
-          
-           
-        </div> 
-        
-        
+              /> : <img alt="Tailwind CSS Navbar component" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+              }
+            </div>
           </label>
         </div>
         <div className="drawer-side">
@@ -37,19 +36,19 @@ const Profile = ({ user }) => {
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
-          <ul className="menu bg-white text-base-content min-h-full w-80 p-4">
+          <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
             {/* Sidebar content here */}
             <li>
               <a href="/update-profile">Profile</a>
             </li>
             <li>
-              <a>Orders</a>
+              <a>Order</a>
             </li>
             <li>
-              <a>Settings</a>
+              <a>Setting</a>
             </li>
             <li>
-              <a>LogOut</a>
+              <a onClick={handleLogout}>Logout</a>
             </li>
           </ul>
         </div>

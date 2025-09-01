@@ -37,7 +37,7 @@ const Modal = () => {
   //google sign in
   const handleLogin = () => {
     signUpWithgmail().then((result)=> {
-      const user = result.user;
+      const user = result.user;      
       alert("Login Successfull!!");
       navigate(from, {replace:true})
     }).catch((error)=> console.log(error)
