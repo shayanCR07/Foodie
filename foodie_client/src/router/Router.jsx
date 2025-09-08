@@ -4,6 +4,7 @@ import Home from "../pages/Home/Home";
 import Menu from "../pages/Shop/Menu";
 import Signup from "../components/Signup";
 import UpdateProfile from "../pages/dashboard/UpdateProfile";
+import CartPage from "../pages/Shop/CartPage";
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
         {
           path: "/menu",
           element: <Menu />
+        },
+        {
+          path: "/cart-page",
+          element: <CartPage/>
         },
         {
           path: "/update-profile",
