@@ -5,6 +5,7 @@ import { AuthContext } from "../contexts/AuthProvider";
 import Swal from "sweetalert2";
 
 const Cards = ({ item }) => {
+  
   const { name, price, image, recipe, _id } = item;
   const [isHeartFilled, setIsHeartFilled] = useState(false);
   const { user } = useContext(AuthContext);
@@ -15,34 +16,42 @@ const Cards = ({ item }) => {
   const handleAddToCart = (item) => {
     if (user && user?.email) {
       const cartItem = {
-        menuItemId: _id,
-        image,
-        price,
-        name,
+        menuItemId: item._id,
+        image: item.image,
+        price: item.price,
+        name: item.name,
         quantity: 1,
         email: user.email,
       };
-      //console.log(cartItem);
-      fetch("http://localhost:6001/carts", {
+      console.log(cartItem);
+      fetch("http://localhost:6001/cart", {
         method: "POST",
         headers: {
           "content-type": "application/json",
         },
         body: JSON.stringify(cartItem),
       })
-        .then((res) => res.json())
-        .then((data) => {
-          //console.log(data);
-          if (data.insertedId) {
+        .then(async(res) => {
+          console.log(res);
+          const data = await res.json()
+          if (res.ok) {
             Swal.fire({
               position: "top-end",
               icon: "success",
-              title: "Your item is Successfully added to the cart",
+              title: data?.message,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }else{
+            Swal.fire({
+              position: "top-end",
+              icon: "error",
+              title: data?.message,
               showConfirmButton: false,
               timer: 1500,
             });
           }
-        });
+        })
     } else {
       Swal.fire({
         title: "Please Login",
