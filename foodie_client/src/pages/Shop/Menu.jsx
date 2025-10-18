@@ -79,6 +79,8 @@ const Menu = () => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredItems.slice(indexOfFirstItem,indexOfLastItem);
+  console.log(currentItems);
+  
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
@@ -145,8 +147,8 @@ const Menu = () => {
         {/* Product card */}
         <div className="grid md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-4">
             {
-                currentItems?.map((item) => (
-                    <Cards key={item._id} item={item}/>
+                currentItems?.map((item,index) => (
+                    <Cards key={index} item={item}/>
                 ))
             }
         </div>
