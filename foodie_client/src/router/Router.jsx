@@ -5,6 +5,9 @@ import Menu from "../pages/Shop/Menu";
 import Signup from "../components/Signup";
 import UpdateProfile from "../pages/dashboard/UpdateProfile";
 import CartPage from "../pages/Shop/CartPage";
+import DashboardLayout from "../Layout/DashboardLayout";
+import Dashboard from "../pages/dashboard/admin/Dashboard";
+import Users from "../pages/dashboard/admin/Users";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +35,20 @@ const router = createBrowserRouter([
   {
     path: "/signup",
     element: <Signup />
+  },
+  {
+    path: "/dashboard",
+    element: <DashboardLayout />,
+    children : [
+      {
+        path: '',
+        element: <Dashboard />
+      },
+      {
+        path: 'users',
+        element: <Users />
+      }
+    ]
   }
 ]);
 
