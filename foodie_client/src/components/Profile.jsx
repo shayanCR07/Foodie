@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../contexts/AuthProvider";
+import { Link } from "react-router-dom";
 
 const Profile = ({ user }) => {
   const {logOut} = useContext(AuthContext)
@@ -39,10 +40,13 @@ const Profile = ({ user }) => {
           <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
             {/* Sidebar content here */}
             <li>
-              <a href="/update-profile">Profile</a>
+              <Link to="/update-profile">Profile</Link>
             </li>
             <li>
               <a>Order</a>
+            </li>
+            <li>
+              <Link to="/dashboard">Dashboard</Link> 
             </li>
             <li>
               <a>Setting</a>

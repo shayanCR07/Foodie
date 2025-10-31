@@ -4,6 +4,8 @@ import { FaFacebookF, FaGithub, FaGoogle } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import Modal from "./Modal";
 import { AuthContext } from "../contexts/AuthProvider";
+import axios from "axios";
+import useAxiosPublic from "../hooks/useAxiosPublic";
 
 const Signup = () => {
   const {
@@ -12,11 +14,13 @@ const Signup = () => {
     formState: { errors },
   } = useForm();
 
-  const { createUser, login } = useContext(AuthContext);
+  const { createUser, login, updateUserProfile, signUpWithGmail } =
+    useContext(AuthContext);
+    const axiosPublic = useAxiosPublic()
   //redirecting to home page or a specific page
-    const location = useLocation();
-    const navigate = useNavigate();
-    const from = location.state?.from?.pathname || "/";
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location.state?.from?.pathname || "/";
 
   const onSubmit = (data) => {
     const email = data.email;
@@ -25,9 +29,22 @@ const Signup = () => {
       .then((result) => {
         // Signed up
         const user = result.user;
-        alert("Account creation Successfully done!!")
-        document.getElementById('my_modal_5').close()
-      navigate(from, {replace:true})
+        updateUserProfile(data.email, data.photoURL).then(() => {
+          const userInfo = {
+            name: data.name,
+            email: data.email,
+          };
+          axiosPublic
+            .post("/users", userInfo)
+            .then((response) => {
+              //console.log(response);
+              alert("Account creation Successfully done!!");
+              navigate(from, { replace: true });
+            });
+        });
+
+        document.getElementById("my_modal_5").close();
+
         // ...
       })
       .catch((error) => {
@@ -35,6 +52,25 @@ const Signup = () => {
         const errorMessage = error.message;
         // ..
       });
+  };
+
+  //Login with google
+  const handleRegister = () => {
+    signUpWithGmail().then((result) => {
+      const user = result.user;
+      const userInfo = {
+        name: result?.user?.displayName,
+        email: result?.user?.email,
+      };
+      axiosPublic.post("/users", userInfo).then((response) => {
+        //console.log(response);
+        alert("Account creation Successfully done!!");
+        navigate( "/");
+      });
+    }).catch((error) => {
+      console.log(error);
+      
+    })
   };
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
