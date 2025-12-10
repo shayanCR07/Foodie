@@ -6,7 +6,8 @@ const axiosPublic = axios.create({
   });
   
 const useAxiosPublic = () => {
-  
+  console.log("PUBLIC BASE URL:", axiosPublic.defaults.baseURL);
+
   return axiosPublic
 };
 

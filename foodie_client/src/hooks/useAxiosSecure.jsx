@@ -11,6 +11,7 @@ const useAxiosSecure = () => {
 
     const navigate = useNavigate()
     const {logOut} = useAuth()
+    console.log("SECURE BASE URL:", axiosSecure.defaults.baseURL);
 
     axiosSecure.interceptors.request.use(function (config) {
     // Do something before request is sent
