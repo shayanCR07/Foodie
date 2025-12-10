@@ -13,9 +13,14 @@ const menuSchema = new Schema ({
     recipe: String,
     image: String,
     category: String,
-    price: Number
+    price: Number,
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
 })
 
 //create model
 const Menu = mongoose.model("Menu", menuSchema);
+// console.log(Menu.findById("642c155b2c4774f05c36eeb5"))
 module.exports = Menu;
