@@ -3,46 +3,47 @@ import useCart from "../../hooks/useCart";
 import { FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../contexts/AuthProvider";
+import { Link } from "react-router-dom";
 
 const CartPage = () => {
-  const [cart, refetch] = useCart();
+  const [cartData, refetch] = useCart();
+  const cart = Array.isArray(cartData) ? cartData : [];
   const { user } = useContext(AuthContext);
-  const [cartitems, setcartItems] = useState([])
-
+  const [cartitems, setcartItems] = useState([]);
 
   //calculate price
   const calculatePrice = (item) => {
-    return item.price * item.quantity
-  }
+    return item.price * item.quantity;
+  };
 
   //handle decrease function
   const handleDecrease = (item) => {
-    if(item.quantity > 1)
-    {
+    if (item.quantity > 1) {
       fetch(`http://localhost:6001/cart/${item._id}`, {
-      method: "PUT",
-      headers: {
-        "Content-type": "application/json; chartset=UTF-8"
-      },
-      body: JSON.stringify({quantity: item.quantity - 1})
-    }).then(res => res.json()).then(data => {
-      const updatedCart = cartitems.map((cartItem) => {
-        if(cartItem.id === item.id){
-          return {
-            ...cartItem,
-            quantity: cartItem.quantity-1
-          }
-        }
-
-        return cartItem;
+        method: "PUT",
+        headers: {
+          "Content-type": "application/json; chartset=UTF-8",
+        },
+        body: JSON.stringify({ quantity: item.quantity - 1 }),
       })
-      refetch()
-      setcartItems(updatedCart);
-    })
-    refetch()
-    }
-    else{
-      alert("Item cannot be zero.")
+        .then((res) => res.json())
+        .then((data) => {
+          const updatedCart = cartitems.map((cartItem) => {
+            if (cartItem.id === item.id) {
+              return {
+                ...cartItem,
+                quantity: cartItem.quantity - 1,
+              };
+            }
+
+            return cartItem;
+          });
+          refetch();
+          setcartItems(updatedCart);
+        });
+      refetch();
+    } else {
+      alert("Item cannot be zero.");
     }
   };
 
@@ -52,30 +53,32 @@ const CartPage = () => {
     fetch(`http://localhost:6001/cart/${item._id}`, {
       method: "PUT",
       headers: {
-        "Content-type": "application/json; chartset=UTF-8"
+        "Content-type": "application/json; chartset=UTF-8",
       },
-      body: JSON.stringify({quantity: item.quantity + 1})
-    }).then(res => res.json()).then(data => {
-      const updatedCart = cartitems.map((cartItem) => {
-        if(cartItem.id === item.id){
-          return {
-            ...cartItem,
-            quantity: cartItem.quantity+1
-          }
-        }
-
-        return cartItem;
-      })
-      refetch()
-      setcartItems(updatedCart);
+      body: JSON.stringify({ quantity: item.quantity + 1 }),
     })
-    refetch()
+      .then((res) => res.json())
+      .then((data) => {
+        const updatedCart = cartitems.map((cartItem) => {
+          if (cartItem.id === item.id) {
+            return {
+              ...cartItem,
+              quantity: cartItem.quantity + 1,
+            };
+          }
+
+          return cartItem;
+        });
+        refetch();
+        setcartItems(updatedCart);
+      });
+    refetch();
   };
 
   //calculate total price
   const cartSubTotal = cart.reduce((total, item) => {
     return total + calculatePrice(item);
-  },0);
+  }, 0);
 
   const orderTotal = cartSubTotal;
 
@@ -164,11 +167,12 @@ const CartPage = () => {
                   <input
                     type="number"
                     value={item.quantity}
-                    onChange={()=> console.log(item.quantity)}
+                    onChange={() => console.log(item.quantity)}
                     className="bg-white w-10 mx-2 text-center overflow-hidden appearance-none"
                   />
-                  <button className="btn btn-xs bg-gray-200 border-none my-2 text-black"
-                  onClick={() => handleIncrease(item)}
+                  <button
+                    className="btn btn-xs bg-gray-200 border-none my-2 text-black"
+                    onClick={() => handleIncrease(item)}
                   >
                     +
                   </button>
@@ -192,17 +196,19 @@ const CartPage = () => {
       <div className="my-12 flex flex-col md:flex-row justify-between items-start">
         <div className="md:w-1/2 space-y-3">
           <h3 className="font-medium text-black">Customer Details</h3>
-          <p className="text-black">Name: {user.displayName}</p>
-          <p className="text-black">Email: {user.email}</p>
-          <p className="text-black">User Id: {user.uid}</p>
+          <p className="text-black">Name: {user?.displayName}</p>
+          <p className="text-black">Email: {user?.email}</p>
+          <p className="text-black">User Id: {user?.uid}</p>
         </div>
         <div className="md:w-1/2 space-y-3">
           <h3 className="font-medium text-black">Shopping Details</h3>
           <p className="text-black">Total Items: {cart.length}</p>
           <p className="text-black">Total Price: ${orderTotal.toFixed(2)}</p>
-          <button className="btn bg-green text-white border-none">
-            Procceed Checkout
-          </button>
+          <Link to="/process-checkout">
+            <button className="btn bg-green text-white border-none mt-5">
+              Procceed Checkout
+            </button>
+          </Link>
         </div>
       </div>
     </div>

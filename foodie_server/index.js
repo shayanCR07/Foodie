@@ -3,9 +3,9 @@ const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const port = process.env.PORT || 6001;
-const jwt = require('jsonwebtoken');
-require('dotenv').config()
-
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 //middleware
 app.use(cors());
@@ -20,28 +20,43 @@ mongoose
   .then(console.log("Mongoose Connected Successfully!"))
   .catch((error) => console.log("Error connecting to mongodb ", error));
 
-  //jwt authentication
-  app.post('/jwt', async(req, res) => {
-    const user = req.body;
-    const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: '1hr'
-    })
-    res.send({token})
-  })
+//jwt authentication
+app.post("/jwt", async (req, res) => {
+  const user = req.body;
+  const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "1hr",
+  });
+  res.send({ token });
+});
 
-  
+//import routes here
+const MenuRoutes = require("./api/routes/MenuRoutes");
+const CartRoutes = require("./api/routes/CartRoutes");
+const UserRoutes = require("./api/routes/UserRoutes");
+const PaymentRoutes = require("./api/routes/PaymentsRoutes")
+app.use("/cart", CartRoutes);
+app.use("/menu", MenuRoutes);
+app.use("/users", UserRoutes);
+app.use("/payments",PaymentRoutes)
 
+//stripe payment routes
+app.post("/create-payment-intent", async (req, res) => {
+  const { price } = req.body;
+  const amount = price * 100;
 
-  //import routes here
-  const MenuRoutes = require('./api/routes/MenuRoutes');
-  const CartRoutes = require('./api/routes/CartRoutes');
-  const UserRoutes = require('./api/routes/UserRoutes')
-  app.use('/cart', CartRoutes);
-  app.use('/menu', MenuRoutes);
-  app.use('/users', UserRoutes);
+  // Create a PaymentIntent with the order amount and currency
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: amount,
+    currency: "usd",
+    payment_method_types: ["card"],
+  });
 
+  res.send({
+    clientSecret: paymentIntent.client_secret,
+  });
+});
 
-app.get("/",(req, res) => {
+app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
