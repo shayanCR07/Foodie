@@ -31,7 +31,7 @@ const Order = () => {
       );
       const data = await res.json();
       //return data.payments || data.data || [];
-       return Array.isArray(data) ? data : [];
+      return Array.isArray(data) ? data : [];
     },
   });
   console.log(orders);

@@ -1,10 +1,11 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const port = process.env.PORT || 6001;
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
+
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 //middleware
@@ -12,13 +13,15 @@ app.use(cors());
 app.use(express.json());
 
 //mongodb configuration using mongoose
+// console.log("DB_USER:", process.env.DB_USER);
+// console.log("DB_PASSWORD:", process.env.DB_PASSWORD);
 
-mongoose
-  .connect(
-    `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@demo-foodie-client.ob6waw6.mongodb.net/demo-foodie-client?retryWrites=true&w=majority&appName=demo-foodie-client`
-  )
-  .then(console.log("Mongoose Connected Successfully!"))
-  .catch((error) => console.log("Error connecting to mongodb ", error));
+mongoose.connect(
+  `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@demo-foodie-client.ob6waw6.mongodb.net/demo-foodie-client?authSource=admin&retryWrites=true&w=majority`
+)
+.then(() => console.log("Mongoose Connected Successfully!"))
+.catch(err => console.log("MongoDB Error:", err.message));
+
 
 //jwt authentication
 app.post("/jwt", async (req, res) => {
