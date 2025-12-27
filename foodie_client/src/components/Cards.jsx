@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 import { AuthContext } from "../contexts/AuthProvider";
 import Swal from "sweetalert2";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Cards = ({ item }) => {
   
@@ -11,6 +12,7 @@ const Cards = ({ item }) => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
+  const queryClient = useQueryClient();
 
   //add to Cart btn
   const handleAddToCart = (item) => {
@@ -35,6 +37,7 @@ const Cards = ({ item }) => {
           console.log(res);
           const data = await res.json()
           if (res.ok) {
+              queryClient.invalidateQueries(["cart", user.email]);
             Swal.fire({
               position: "top-end",
               icon: "success",

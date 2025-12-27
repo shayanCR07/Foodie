@@ -99,14 +99,20 @@ const CartPage = () => {
         })
           .then((res) => res.json())
           .then((data) => {
-            if (data.deletedCount > 0) {
-              refetch();
-              Swal.fire({
-                title: "Deleted!",
-                text: "Your file has been deleted.",
-                icon: "success",
-              });
-            }
+            console.log("DELETE response:", data);
+            // if (data.deletedCount > 0) {
+            //   refetch();
+            //   Swal.fire({
+            //     title: "Deleted!",
+            //     text: "Your file has been deleted.",
+            //     icon: "success",
+            //   });
+            // }
+
+             if (data?.message || data?.success || data?.acknowledged) {
+            refetch();
+            Swal.fire("Deleted!", "Item removed from cart.", "success");
+          }
           });
       }
     });

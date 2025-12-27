@@ -1,42 +1,51 @@
-import React from 'react'
-import {useNavigate} from 'react-router-dom'
-import useAuth from './useAuth'
-import axios from 'axios'
+import axios from "axios";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import useAuth from "./useAuth";
 
 const axiosSecure = axios.create({
-     baseURL: "http://localhost:6001",
-})
+  baseURL: "http://localhost:6001",
+});
 
 const useAxiosSecure = () => {
+  const navigate = useNavigate();
+  const { logOut } = useAuth();
 
-    const navigate = useNavigate()
-    const {logOut} = useAuth()
-    console.log("SECURE BASE URL:", axiosSecure.defaults.baseURL);
+  useEffect(() => {
+    // REQUEST interceptor
+    const reqInterceptor = axiosSecure.interceptors.request.use(
+      (config) => {
+        const token = localStorage.getItem("access-token");
+        if (token) {
+          config.headers.authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
 
-    axiosSecure.interceptors.request.use(function (config) {
-    // Do something before request is sent
-    const token = localStorage.getItem('access-token')
-    config.headers.authorization = `Bearer ${token}`
-    return config;
-  }, function (error) {
-    // Do something with request error
-    return Promise.reject(error);
-  });
+    // RESPONSE interceptor
+    const resInterceptor = axiosSecure.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const status = error.response?.status;
+        if (status === 401 || status === 403) {
+          await logOut();
+          navigate("/signup");
+        }
+        return Promise.reject(error);
+      }
+    );
 
-  // Add a response interceptor
-  axiosSecure.interceptors.response.use(function(response) {
-    return response;
-  }, async(error) => {
-    const status = error.response.status;
+    // 🔑 CLEANUP (VERY IMPORTANT)
+    return () => {
+      axiosSecure.interceptors.request.eject(reqInterceptor);
+      axiosSecure.interceptors.response.eject(resInterceptor);
+    };
+  }, [logOut, navigate]);
 
-    if( status === 401 || status === 403){
-        await logOut();
-        navigate('/signup')
-    }
-    return Promise.reject(error);
-  });
-
+  console.log("SECURE BASE URL:", axiosSecure.defaults.baseURL);
   return axiosSecure;
-}
+};
 
-export default useAxiosSecure
+export default useAxiosSecure;

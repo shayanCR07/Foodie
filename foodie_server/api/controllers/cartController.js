@@ -13,27 +13,81 @@ const getCartsByEmail = async(req, res) => {
 }
 
 //post a cart when add to cart btn clicked
-const addToCart = async(req, res)=> {
-    try{
-        const {menuItemId, name, recipe, image, price, quantity, email} = req.body;
+// const addToCart = async(req, res)=> {
+//     try{
+//         const {menuItemId, name, recipe, image, price, quantity, email} = req.body;
 
-        console.log("Req : ",req.body);
+//         console.log("Req : ",req.body);
         
-        //existing menu item
-        const existingCartItem = await Cart.findOne({menuItemId});
-        if(existingCartItem){
-            return res.status(400).json({message: "Product is already in the cart!"});
-        }        
+//         //existing menu item
+//         const existingCartItem = await Cart.findOne({menuItemId});
+//         if(existingCartItem){
+//             return res.status(400).json({message: "Product is already in the cart!"});
+//         }        
 
-        const cartItem = await Cart.create({
-            menuItemId, name, recipe: recipe || "", image, price, quantity, email
-        })        
+//         const cartItem = await Cart.create({
+//             menuItemId, name, recipe: recipe || "", image, price, quantity, email
+//         })        
 
-        res.status(201).json({message:"Your item is Successfully added to the cart",cartItem})
-    }catch(error) {
-        res.status(500).json({message: error.message});
+//         res.status(201).json({message:"Your item is Successfully added to the cart",cartItem})
+//     }catch(error) {
+//         res.status(500).json({message: error.message});
+//     }
+// }
+
+
+const addToCart = async (req, res) => {
+  try {
+    const {
+      menuItemId,
+      name,
+      recipe,
+      image,
+      price,
+      quantity,
+      email,
+    } = req.body;
+
+    if (!email || !menuItemId) {
+      return res.status(400).json({
+        message: "Invalid cart data",
+      });
     }
-}
+
+    // ✅ Correct existence check (email + menuItemId)
+    const existingCartItem = await Cart.findOne({
+      email: email,
+      menuItemId: menuItemId,
+    });
+
+    if (existingCartItem) {
+      return res.status(409).json({
+        message: "Product is already in your cart!",
+      });
+    }
+
+    const cartItem = await Cart.create({
+      menuItemId,
+      name,
+      recipe: recipe || "",
+      image,
+      price,
+      quantity,
+      email,
+    });
+
+    res.status(201).json({
+      message: "Your item was successfully added to the cart",
+      cartItem,
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
 
 //delete a cart item
 const deleteCart = async (req, res) => {

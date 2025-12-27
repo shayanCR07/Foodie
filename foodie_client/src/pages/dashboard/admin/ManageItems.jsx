@@ -12,33 +12,59 @@ const ManageItems = () => {
   const axiosSecure = useAxiosSecure();
   // console.log(menu);
 
-  const handleDeleteItem = item => {
-    //console.log(item);
+  // const handleDeleteItem = item => {
+  //   //console.log(item);
+  //   Swal.fire({
+  //     title: "Are you sure?",
+  //     text: "You won't be able to revert this!",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#3085d6",
+  //     cancelButtonColor: "#d33",
+  //     confirmButtonText: "Yes, delete it!",
+  //   }).then(async (result) => {
+  //     if (result.isConfirmed) {
+  //       console.log("ITEM ID:", item._id);
+  //       const res = await axiosSecure.delete(`/menu/${item._id}`);
+  //       console.log(res);
+  //       if(res){
+  //         Swal.fire({
+  //           title: "Deleted!",
+  //           text: "Your file has been deleted.",
+  //           icon: "success",
+  //         });
+  //       }
+  //     }
+  //   });
+
+  // };
+
+  const handleDeleteMenuItem = (menu) => {
     Swal.fire({
       title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      text: "This item will be permanently removed from the menu.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonText: "Yes, delete",
     }).then(async (result) => {
+      console.log("DELETE OBJECT:", menu);
       if (result.isConfirmed) {
-        console.log("ITEM ID:", item._id);
-        const res = await axiosSecure.delete(`/menu/${item._id}`);
-        console.log(res);
-        if(res){
-          Swal.fire({
-            title: "Deleted!",
-            text: "Your file has been deleted.",
-            icon: "success",
-          });
+        try {
+          console.log("MENU ID:", menu._id); // must exist in menus collection
+
+          await axiosSecure.delete(`/menu/${menu._id}`);
+          refetch();
+
+          Swal.fire("Deleted!", "Menu item deleted successfully.", "success");
+        } catch (error) {
+          Swal.fire(
+            "Error",
+            error.response?.data?.message || "Menu item not found",
+            "error"
+          );
         }
       }
     });
-
-    
-
   };
 
   return (
@@ -89,7 +115,7 @@ const ManageItems = () => {
                   </td>
                   <td>
                     <button
-                      onClick={() => handleDeleteItem(item)}
+                      onClick={() => handleDeleteMenuItem(item)}
                       className="btn btn-ghost btn-xs text-red"
                     >
                       <FaTrashAlt />
