@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const Order = () => {
   const { user } = useAuth();
-  console.log(user?.email);
+  // console.log(user?.email);
 
   const token = localStorage.getItem("access-token");
   const { refetch, data: orders = [] } = useQuery({
@@ -34,7 +34,7 @@ const Order = () => {
       return Array.isArray(data) ? data : [];
     },
   });
-  console.log(orders);
+  // console.log(orders);
 
   //calculate price
   const calculatePrice = (item) => {

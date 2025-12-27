@@ -1,14 +1,21 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../contexts/AuthProvider";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Profile = ({ user }) => {
   const {logOut} = useContext(AuthContext)
+  const navigate = useNavigate();
   const handleLogout = () => {
     logOut().then(() => {
       // Sign-out successful.
+       alert("LogOut Successfull!!");
+       navigate("/", {replace:true});
+       console.log("logOut:", logOut);
+
     }).catch((error) => {
       // An error happened.
+      console.log(error);
+      
     });
   }
   return (
@@ -46,11 +53,11 @@ const Profile = ({ user }) => {
               <Link to="/orders">Order</Link>
             </li>
             <li>
-              <Link to="/dashboard">Dashboard</Link> 
+              <Link to="/dashboard/add-menu">Dashboard</Link> 
             </li>
-            <li>
+            {/* <li>
               <a>Setting</a>
-            </li>
+            </li> */}
             <li>
               <a onClick={handleLogout}>Logout</a>
             </li>

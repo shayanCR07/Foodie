@@ -54,48 +54,52 @@ const CheckoutForm = ({ price, cart }) => {
       console.log("[error]", error);
       setCardError(error.message);
     } else {
-      setCardError("success");
+      setCardError("");
       //console.log("[PaymentMethod]", paymentMethod);
     }
-    const { paymentIntent, error: confirmError } =
-      await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: card,
-          billing_details: {
-            name: user?.displayName || "anonymous",
-            email: user?.email || "unknown",
-          },
-        },
-      });
-      if(confirmError){
-        console.log(confirmError);
-        
-      }
-      console.log(paymentIntent);
-      if(paymentIntent.status === "succeeded"){
-        console.log(paymentIntent.id);
-        setCardError(`Your transaction id is : ${paymentIntent.id}`)
-        //payment info data
-        const paymentInfo = {
-          email: user.email,
-          transactionId: paymentIntent.id,
-          price,
-          quantity: cart.length,
-          status: 'Order Pending',
-          itemName: cart.map(item => item.name),
-          cartItems: cart.map(item => item._id),
-          menuItems: cart.map(item => item.menuItemId)
-        }
-        console.log(paymentInfo);
-        //send information to the backend
-        axiosSecure.post('/payments', paymentInfo).then(res =>{
-          console.log(res.data);
-          alert("Payment Successfull!");
-          navigate('/orders')
-        }
-      )
-        
-      }
+   const { paymentIntent, error: confirmError } =
+  await stripe.confirmCardPayment(clientSecret, {
+    payment_method: {
+      card,
+      billing_details: {
+        name: user?.displayName || "anonymous",
+        email: user?.email || "unknown",
+      },
+    },
+  });
+
+if (confirmError) {
+  console.error(confirmError);
+  setCardError(confirmError.message);
+  return; // ⛔ STOP EXECUTION HERE
+}
+
+if (!paymentIntent) {
+  setCardError("Payment failed. No payment intent created.");
+  return;
+}
+
+if (paymentIntent.status === "succeeded") {
+  console.log(paymentIntent.id);
+  setCardError(`Your transaction id is: ${paymentIntent.id}`);
+
+  const paymentInfo = {
+    email: user.email,
+    transactionId: paymentIntent.id,
+    price,
+    quantity: cart.length,
+    status: "Order Pending",
+    itemName: cart.map(item => item.name),
+    cartItems: cart.map(item => item._id),
+    menuItems: cart.map(item => item.menuItemId),
+  };
+
+  axiosSecure.post("/payments", paymentInfo).then(res => {
+    alert("Payment Successful!");
+    navigate("/orders");
+  });
+}
+
       
   };
   return (

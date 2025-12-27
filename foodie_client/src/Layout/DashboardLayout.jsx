@@ -20,19 +20,19 @@ const sharedLinks = (
       </Link>
     </li>
     <li>
-      <Link to="/dashboard">
+      <Link to="/menu">
         <IoIosMenu />
         Menu
       </Link>
     </li>
     <li>
-      <Link to="/dashboard">
+      <Link to="/orders">
         <MdSpatialTracking />
         Order Tracking
       </Link>
     </li>
     <li>
-      <Link to="/dashboard">
+      <Link to="/">
         <MdContactSupport />
         Customer Support
       </Link>
@@ -73,24 +73,24 @@ const DashboardLayout = () => {
           <ul className="menu bg-slate-300 min-h-full w-80 p-4">
             {/* Sidebar content here */}
             <li>
-              <Link to="/dashboard" className="flex justify-start mb-3">
+              <Link to="/" className="flex justify-start mb-3">
                 <img src={logo} alt="" className="w-20" />
                 <div className="badge badge-primary ml-3">Admin</div>
               </Link>
             </li>
             <hr />
-            <li>
+            {/* <li>
               <Link to="/dashboard">
                 <MdDashboard />
                 Dashboard
               </Link>
-            </li>
-            <li>
+            </li> */}
+            {/* <li>
               <Link to="/dashboard">
                 <FaBagShopping />
                 Manage Bookings
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link to="/dashboard/add-menu">
                 <RiMenuAddFill />

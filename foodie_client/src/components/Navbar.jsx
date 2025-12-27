@@ -11,7 +11,7 @@ const Navbar = () => {
   const [isSticky, setIsSticky] = useState(false);
 
   const {user} = useAuth();
-  console.log(user);
+  // console.log(user);
   const [cart, refetch] = useCart();
   //console.log(cart);
   
@@ -44,10 +44,10 @@ const Navbar = () => {
               <a href="/menu">All</a>
             </li>
             <li>
-              <a>Salad</a>
+              <a href="/menu">Salad</a>
             </li>
             <li>
-              <a>Pizza</a>
+              <a href="/menu">Pizza</a>
             </li>
           </ul>
         </details>
@@ -63,7 +63,7 @@ const Navbar = () => {
               <a>Table Booking</a>
             </li>
             <li>
-              <a>Order Tracking</a>
+              <a href="/orders">Order Tracking</a>
             </li>
           </ul>
         </details>
